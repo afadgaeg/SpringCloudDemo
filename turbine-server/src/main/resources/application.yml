@@ -21,7 +21,7 @@ management:
 #      base-path: /
 
 turbine:
-  app-config: service-hi,service-feign,gateway
+  app-config: service-hi,service-feign
   aggregator:
     clusterConfig: default #需要监控的服务集群名
   clusterNameExpression: new String("default")
