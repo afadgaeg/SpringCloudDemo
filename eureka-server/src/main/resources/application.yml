@@ -1,0 +1,12 @@
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost #如要配置高可用，需要配置不同hostname，启动多个eureka实例
+  client:
+    registerWithEureka: false #如要配置高可用registerWithEureka，fetchRegistry参数需要为true(默认值)
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ #如要配置高可用，这里需要指向其他eureka实例，多个eureka实例用逗号分隔
+

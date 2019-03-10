@@ -1,0 +1,40 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8081
+spring:
+  profiles:
+    active: route
+
+---
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false #如果为true，service-hi/hi?name=1323这样的请求地址也能正常访问，因为这时为每个服务创建了2个router。
+          lowerCaseServiceId: true
+      routes: # 可以配置多个route，按照order越小优先级越高的顺序依次匹配断言，直到找到第一条匹配的route
+        - id: demo_route
+          predicates: # predicate 可以组合使用，要求所有predicate 都满足，route才生效
+            - Path=/demo-route/** # Path要求匹配
+            - Header=X-Request-Id, \d+ # 请求必须包含有名字为X-Request-Id，值为数字的header
+          filters:
+            - StripPrefix=1 # 缩减Path前缀，这里缩减掉 /demo-route
+            - name: Hystrix # 遵循约定优于配置，实际对应的是 HystrixGatewayFilterFactory网关过滤器工厂
+              args:
+                name: fallbackcmd
+                fallbackUri: forward:/fallback # 指定断路器断开时返回给调用客户端的友好页面Path
+            - name: RequestTime # 遵循约定优于配置，实际对应的是 RequestTimeGatewayFilterFactory网关过滤器工厂
+              args:
+                withParams: false # 传入给过滤器实例的参数
+          #            - RequestTime=false # 更简洁的写法
+          uri: lb://service-feign # 转到负载均衡集群 service-feign
+          order: 6000 # 优先级
+  profiles: route
+

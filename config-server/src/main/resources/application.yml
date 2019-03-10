@@ -1,0 +1,16 @@
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka/ #建议指向尽可能多的eureka实例，用逗号隔开
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          password:
+          #          searchPaths: respo # 查找配置文件的目录，这里代表在根目录下查找
+          uri: https://github.com/afadgaeg/config
+          username:
+      label: master #git分支
+  application:
+    name: config-server
+server:
+  port: 8888

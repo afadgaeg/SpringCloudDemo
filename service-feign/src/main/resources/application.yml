@@ -1,0 +1,19 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8763
+spring:
+  application:
+    name: service-feign #{application}
+  cloud:
+    config:
+      profile: dev #会在配置中心查找{application}-{profile}.properties或{application}-{profile}.yml，这里找到的是service-feign-dev.properties
+      label: master
+      discovery:
+        enabled: true
+        serviceId: config-server
+feign:
+  hystrix:
+    enabled: true
